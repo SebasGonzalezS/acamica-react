@@ -33,3 +33,5 @@ const alumnos = [
 // 6. Obtener un array con aquellos alumnos que empiezan con la letra "F", usando .filter()
 
 // 7. Obtener un array agregando una propiedad/key/atributo más a cada elemento usando .map()
+
+// 8. Obtener a partir de la constante en 3, el promedio de edad del curso dividiendo la misma por el total de alumnos
