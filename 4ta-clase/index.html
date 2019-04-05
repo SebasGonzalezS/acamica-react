@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<html lang="es">
+  <head>
+    <title>Ejercicios Extra</title>
+
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css" />
+    <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Rick and Morty App</h1>
+
+      <form>
+        <input type="text" placeholder="Rick Sanchez" />
+        <button type="submit">Buscar</button>
+      </form>
+
+      <section class="grid"></section>
+    </div>
+
+    <script>
+      // 1) Voy a resolver 1, 2 con una API de Rick and Morty https://rickandmortyapi.com,
+      //  A. Queremos mostrar una lista de 20 personajes usando https://rickandmortyapi.com/api/character/1,20
+      //  B. Cada Card de personaje tiene que contar con: Nombre, estado, especie, género, planeta, y episodios en lo que aparece.
+      //  C. Además debe contar con un botón que nos diga de que dimensión es el planeta.
+      //  D. Queremos poder buscar por nombre algún personaje de la serie https://rickandmortyapi.com/api/character/?name=
+
+      // 2) Refactorizemos nuestra app armando componentes para nuestra app. Por qué usar componentes?
+
+      const CardItem = props => {
+        const { image, name, species, origin } = props
+        const { name: planet, url } = origin
+
+        return `<article class="card">
+           <div class="head">
+             <img src=${image} alt="" />
+           </div>
+           <div class="body">
+             <div class="content">
+               <h4>Nombre: ${name}</h4>
+               <h5>Especie: ${species}</h5>
+               <h6>Planeta: ${planet}</h6>
+             </div>
+             <button>Obtener Dimensión</button>
+           </div>
+         </article>
+         `
+      }
+
+      const getCharacters = async (baseUrl, from, to) => {
+        const characterRange = Array.from({ length: to - from + 1 }, (_, index) => index + 1).join(',')
+        const url = `${baseUrl}/character/${characterRange}`
+
+        const response = await fetch(url)
+        const characters = await response.json()
+
+        return characters
+      }
+
+      const getCharactersByQuery = async (baseUrl, query) => {
+        const url = `${baseUrl}/character/?name=${query}`
+
+        const response = await fetch(url)
+        const { results: characters } = await response.json()
+
+        return characters
+      }
+
+      const appendElements = (characters, emptyGrid) => {
+        // Obtenemos el elemento con clase grid
+        const grid = document.querySelector('.grid')
+
+        // Si emptyGrid es true vaciamos todos los elementos dentro del mismo
+        if (emptyGrid === true) grid.innerHTML = null
+
+        // Iteramos sobre characters y por cada iteración generamos un HTML y lo vamos apendeando al elemento .grid
+        characters.forEach(character => {
+          const cardItemHTML = CardItem(character)
+          grid.innerHTML += cardItemHTML
+        })
+      }
+
+      const main = async () => {
+        const baseUrl = 'https://rickandmortyapi.com/api'
+
+        // Parte 1 - Obtener elementos de la API y mostralos en el DOM
+        const characters = await getCharacters(baseUrl, 1, 20)
+        appendElements(characters)
+
+        // Parte 2 - Integrar un buscador por personaje
+        const form = document.querySelector('form')
+        const inputCharacter = document.querySelector('input')
+
+        form.addEventListener('submit', async function(event) {
+          event.preventDefault()
+
+          // 1. Obtener el valor del input
+          const query = inputCharacter.value
+
+          // 2. Fetchear personajes en base a ese valor
+          const charactersByQuery = await getCharactersByQuery(baseUrl, query)
+
+          // 3. Mostrar en la grilla los personajes filtrados
+          appendElements(charactersByQuery, true)
+        })
+      }
+
+      main()
+
+      // Investigar: Element.insertAdjacentHTML() 👉 https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML
+      // Es una manera un poco más prolija para reemplazar innerHTML
+    </script>
+  </body>
+</html>

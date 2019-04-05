@@ -1,0 +1,32 @@
+form {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 3fr 1fr;
+}
+
+.grid {
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.card {
+  width: 220px;
+  border: 1px solid #9b4dca;
+  border-radius: 5px;
+}
+
+.card .head {
+  height: 218px;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+}
+
+.card .body {
+  padding: 0 4px 8px 8px;
+}
+
+.card .body button {
+  display: block;
+  margin: 25px auto 2px auto;
+}
