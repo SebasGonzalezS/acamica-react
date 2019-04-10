@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Empezando con React</title>
+  </head>
+
+  <body>
+    <div id="app"></div>
+
+    <div id="app2"></div>
+
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Qué hace babel acá ? -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+    <script type="text/babel">
+      console.log('Ya tenemos React')
+
+      // Primero y principal necesitamos montar un primer elemento o componente en el VDOM, que a su vez tendrá uno o más hijos.
+      const entryPoint = document.querySelector('#app')
+
+      // React.createElement() toma 3 parámetros de entrada, el nombre del elemento ( cualquier etiqueta de HTML ) o componente,
+      // como 2do parámetro un objeto con todos los atributos del DOM o también props que son datos que le podemos pasar a sus hijos
+      // como 3er parámetro le pasamos un children que puede ser un nodo de texto, o bien puede ser un array de elementos de React, o un componente en JSX
+      const titleElement = React.createElement('h1', { className: 'title', key: '982klo' }, 'Acámica')
+
+      // Toma 2 parámetros de entrada, siendo el primero un elemento o componente de React y el segundo un elemento del DOM donde se va a montar este elemento.
+      ReactDOM.render(titleElement, entryPoint)
+
+      // 4) Creemos nuestro primer elemento de React con React.createElement,
+      //    quiero un h1 con una clase "title", y que como hijo tenga de nombre "Acámica"
+      // Ejemplo con un form sin clase y 2 hijos que serán <input type="text"/> y <input type="submit"/>
+
+      /*
+      <form >
+        <input type="text" placeholder="Rick Sanchez" />
+        <button type="submit">Buscar</button>
+        </form>
+      */
+
+      const formElement = React.createElement('form', null, [
+        React.createElement('input', { type: 'text', placeholder: 'Rick Sanchez', key: '987198237123' }),
+        React.createElement('button', { type: 'submit', key: '345724385374512' }, 'Buscar'),
+      ])
+
+      // 5) Primer ejercicio: Creemos un header sin ninguna clase,
+      //  y que muestre 2 hijos: <h2>React.js</h2> y <h3>Best framework ever</h3>
+
+      const headerElement = React.createElement('header', null, [
+        React.createElement('h2', { key: '9123123' }, 'React.js'),
+        React.createElement('h3', { key: '9128418232' }, 'Best framework ever'),
+      ])
+
+      // JSX nos permite utilizar una sintáxis XML como estamos acostumbrados en HTML
+      // pero poder usar la misma dentro de JavaScript, al fin y al cabo estas etiquetas terminan
+      // siendo compiladas a React.createElement()
+
+      const Header = (
+        <header>
+          <h2>React.js</h2>
+          <h3>Best Framework ever</h3>
+          <h4>Go and read the docs!</h4>
+        </header>
+      )
+
+      ReactDOM.render(Header, document.querySelector('#app2'))
+
+      // Nuestro primer componente!!
+      // Los componentes de React se escriben en UpperCase, y pueden ser tanto funciones o generadas por clases (class)
+      const HeaderComponent = props => {
+        console.log('TCL: props', props)
+        const { title, subtitle, animated } = props
+
+        return (
+          <header>
+            {animated === true ? <marquee>{title}</marquee> : <h2>{title}</h2>}
+            <h3>{subtitle}</h3>
+            <h4>Go and read the docs!</h4>
+          </header>
+        )
+      }
+
+      ReactDOM.render(
+        <div>
+          <HeaderComponent title='Angular' subtitle='Worst framework ever' animated />
+          <HeaderComponent title='React' subtitle='Best framework ever' animated />
+          <HeaderComponent title='Vue.js' subtitle='Good framework ever' animated />
+        </div>,
+        document.querySelector('#app2')
+      )
+
+
+      /* 
+      
+      */
+    </script>
+  </body>
+</html>
