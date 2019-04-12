@@ -37,12 +37,39 @@
       //    quiero un h1 con una clase "title", y que como hijo tenga de nombre "Acámica"
       // Ejemplo con un form sin clase y 2 hijos que serán <input type="text"/> y <input type="submit"/>
 
-      /*
+
       <form >
         <input type="text" placeholder="Rick Sanchez" />
         <button type="submit">Buscar</button>
+      </form>
+
+      const FormJSX = () => {
+        return (<form>
+          <input type="text" placeholder="Rick Sanchez" />
+          <button type="submit">Buscar</button>
         </form>
-      */
+        )
+      }
+
+      const FormCompiled = () => {
+        return (React.createElement('form', null, [
+        React.createElement('input', { type: 'text', placeholder: 'Rick Sanchez', key: '987198237123' }),
+        React.createElement('button', { type: 'submit', key: '345724385374512' }, 'Buscar'),
+      ])
+        )
+      }
+
+
+      const FormCompiled = () => {
+        return (React.createElement('form', null,
+        React.createElement('input', { type: 'text', placeholder: 'Rick Sanchez', key: '987198237123' }),
+        React.createElement('button', { type: 'submit', key: '345724385374512' }, 'Buscar'),
+        React.createElement('button', { type: 'submit', key: '345724385374512' }, 'Buscar'),
+        React.createElement('button', { type: 'submit', key: '345724385374512' }, 'Buscar'),
+      )
+        )
+      }
+
 
       const formElement = React.createElement('form', null, [
         React.createElement('input', { type: 'text', placeholder: 'Rick Sanchez', key: '987198237123' }),
@@ -74,7 +101,6 @@
       // Nuestro primer componente!!
       // Los componentes de React se escriben en UpperCase, y pueden ser tanto funciones o generadas por clases (class)
       const HeaderComponent = props => {
-        console.log('TCL: props', props)
         const { title, subtitle, animated } = props
 
         return (
@@ -88,17 +114,12 @@
 
       ReactDOM.render(
         <div>
-          <HeaderComponent title='Angular' subtitle='Worst framework ever' animated />
+          <HeaderComponent title='Angular' subtitle='Worst framework ever' animated={true} />
           <HeaderComponent title='React' subtitle='Best framework ever' animated />
           <HeaderComponent title='Vue.js' subtitle='Good framework ever' animated />
         </div>,
         document.querySelector('#app2')
       )
-
-
-      /* 
-      
-      */
     </script>
   </body>
 </html>

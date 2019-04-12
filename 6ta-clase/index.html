@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Props y State</title>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic" />
+    <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css" />
+    <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css" />
+  </head>
+
+  <body>
+    <div id="app"></div>
+
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+    <script type="text/babel">
+      // 2) Para que nos sirven las props? Como fluyen las props? Se pueden modificar?
+      // Ejemplo de componente Clock usando setInterval y props. Enviemosle la prop date con un Date usando .toLocaleTimeString()
+
+      // Para que nos sirven las props? Para customizar y re-utilizar nuestro componente
+
+      // Como es el flujo de las props o como viajan las props?
+      // Fluyen de padre a hijo  y de manera uni-direccionalmente, es decir que un hijo no puede enviarle una prop a su padre
+
+      // Se pueden modificar las props?
+      // No se pueden modificar, es decir que son Read Only ( de solo lectura )
+      // Esto viene de la filosofía de la programación funcional, la cuál React forzosamente nos hace seguir estos patrones
+      // Por ejemplo al no poder modificar las props estamos usando el concepto de "Pure Functions" o funciones puras
+      // El cuál en una de las cláusulas nos dice que nunca debemos de modificar los parámetros de entrada de nuestra función
+
+      // Podemos tipar o definir los tipos de las props?
+      // Podemos utilizar la libreria prop-types para definir los tipos de nuestras props
+      // Entonces si les pasamos un tipo distinto al definido nos va tirar un warning
+
+      const CurrentDate = props => {
+        const { localeDate } = props
+
+        return <h2>{localeDate}</h2>
+      }
+
+      /*
+      const Clock = props => {
+        const { date } = props
+
+        return (
+          <div>
+            <CurrentDate localeDate={date.toLocaleDateString()} />
+            <time>{date.toLocaleTimeString()}</time>
+          </div>
+        )
+      }
+
+      setInterval(() => {
+        ReactDOM.render(<Clock date={new Date()} />, document.querySelector('#app'))
+      }, 1000)
+      */
+
+      // No podemos re-utilizar el componente Clock porque la lógica del mismo vive fuera del componente
+      // Toda la lógica relacionada al mismo debería vivir dentro del componente. Esto nos da el punta pie a State
+
+      // 3) Puede el componente Clock manejar su propia lógica internamente ?
+      // Veamos Estado y Ciclo de vida convirtiendo el functional component Clock a un class component
+      // Como modificamos el estado? Podemos modificarlo directamente? El método setState() es sincrónico?
+      // Cuales son los lifecycle methods que vimos ?
+
+      // Que significa extends React.Component?
+      // Significa que va a heredar todos los métodos y propiedades de React.Component
+      // Ahora vamos a contar con toda la funcionalidad que tiene un componente de React: state, props y lifecycle methods
+      // Por ej: el método render() es heredado de React.Component, como otros que vamos a ver
+
+      // En el método render() devolvemos nuestro JSX a renderizar en el DOM
+
+      // Qué es el constructor? Es el primer método que se ejecuta automáticamente en la instancia de la clase, nuestro componente.
+      // Qué es super()? Es un método que ejecuta el constructor de la clase padre o componente padre.
+      // En la primer línea del cuerpo del método constructor() tenemos que llamar siempre a super()
+
+      class Clock extends React.Component {
+        constructor() {
+          super()
+
+          this.state = {
+            date: new Date(),
+          }
+        }
+
+        componentDidMount() {
+          console.log('El componente se acaba de montar')
+          // Ahora que se montó / renderizo el componente podemos ejecutar nuestra lógica de actualizar el estado
+
+          /*
+            No podemos mutar directamente el estado, sino lo tenemos que hacer a través del método this.setState()
+
+            setInterval(() => {
+              this.state.date = new Date()
+            }, 1000)
+          */
+
+          setTimeout(() => {
+            // Al método setState() pasamos como parámetro un objeto con las propiedades que quisieramos modificar del estado
+            this.setState({ date: new Date() })
+          }, 1000)
+        }
+
+        render() {
+          console.log('dentro del render mostrando el state', this.state)
+
+          return (
+            <div>
+              <CurrentDate localeDate={this.state.date.toLocaleDateString()} />
+              <time>{this.state.date.toLocaleTimeString()}</time>
+            </div>
+          )
+        }
+      }
+
+      // Qué es el estado o state?
+      // Lo pueden pensar  como los datos internos del componente, y estos contrariamente a las props si pueden modificar
+
+      // Como definimos el state dentro de un Class Component?
+      // Lo definimos como asignando un objeto al this.state dentro del método constructor()
+
+      // Nuestro primer Lifecycle method!!! componentDidMount()
+      // El componentDidMount se ejecuta cuando se monta el componente, es decir después del primer render ( primer ejecución del método render() )
+
+      // Como modificamos el estado?
+      // Lo modificamos con el método this.setState()
+
+      // Podemos modificarlo directamente?
+      // No, debemos utilizar el método anteriormente mencionada
+
+      // El método setState() es sincrónico?
+      // No, y si queremos ejecutar algo inmediatamente después de que se seteo el estado, debemos usar el callback del setState()
+      ReactDOM.render(<Clock />, document.querySelector('#app'))
+    </script>
+  </body>
+</html>
