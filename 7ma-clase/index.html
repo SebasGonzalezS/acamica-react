@@ -48,16 +48,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js"></script>
 
     <script type="text/babel">
-      // 3) Ejemplo de Lista de Empleados ( ~1 hora )
+      // 3) Ejemplo de Lista de Empleados
       // La lista de empleados será un array de objetos con nombre, sector, avatar y id.
-      //    a. Poder elegir Empleado del Mes y mostrarlo de manera diferente ( TODO )
+      //    a. Poder elegir Empleado del Mes y mostrarlo de manera diferente
+
+      //        a.1 Crear un nuevo botón en EmployeeCard que sea diga "Empleado del mes"
+      //        a.2 Al hacer click ( investigar evento de React onClick ) ejecutar un método "selectMonthEmployee"
+      //        a.3 El método obtendrá el nombre de empleado y lo almacenará en el estado en una key monthEmployee
+      //        a.4 Enviar una prop nueva a EmployeeCard llamada isMonthEmployee
+      //        a.5 El valor de esta prop será igual a el nombre de empleado que estemos iterendo === monthEmployee ( del estado )
+      //        a.6 Editar el componente EmployeeCard para que reciba esta prop y de alguna manera por estilos se muestre distinto
+
       //    b. Poder agregar un nuevo empleado ( LISTO )
-      //    c. Poder editar un empleado existente
-      // 1. Mostrar un modal con un formulario dentro
-      // 2. e
+      //    c. Poder editar un empleado existente ( Se ve la próxima clase)
+
       //    d. Poder eliminar un empleado existente
-      //    e. Poder filtrar por departamento
-      //    f. Poder filtrar por nombre
+      //        d.1 Al hacer click ( investigar evento de React onClick ) en el botón "Eliminar" ejecutar un método
+      //        d.2 El método obtendrá el id de empleado y lo buscará en el array "list" del estado
+      //        d.3 Buscar en que īndice se encuentra el empleado con ese id en particular "findIndex"
+      //        d.4 Usando el método slice() ( Investigar ) obtener un array nuevo con todos los mismos elementos pero sin el indice hallado
+      //        d.5 A este nuevo array almacenarlo en el estado en la propiedad "list"
+
+      //    e. Poder filtrar por departamento ( Se ve la próxima clase)
+      //    f. Poder filtrar por nombre ( Se ve la próxima clase)
       // Diseño de Idea: https://dribbble.com/shots/6131920-Employee-page
 
       class App extends React.Component {
@@ -77,7 +90,7 @@
           }
         }
 
-        handleSubmit = event => {
+        handleAddEmployeeSubmit = event => {
           event.preventDefault()
           const { list, employeeName } = this.state
 
@@ -93,7 +106,7 @@
           this.setState({ list: newList })
         }
 
-        handleChange = event => {
+        handleAddEmployeeChange = event => {
           const { value } = event.target
           this.setState({ employeeName: value })
         }
@@ -103,8 +116,13 @@
             <div className='container'>
               <h1 className='is-size-1'>Lista de Empleados</h1>
 
-              <form onSubmit={this.handleSubmit}>
-                <input className='input' type='text' value={this.state.newEmployee} onChange={this.handleChange} />
+              <form onSubmit={this.handleAddEmployeeSubmit}>
+                <input
+                  className='input'
+                  type='text'
+                  value={this.state.newEmployee}
+                  onChange={this.handleAddEmployeeChange}
+                />
                 <button className='button is-success' type='submit'>
                   Agregar Empleado
                 </button>
