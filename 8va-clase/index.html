@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html lang="es">
+  <head>
+    <title>Empleados</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css" />
+
+    <style>
+      :root {
+        --grey-1: #fafafa;
+        --grey-2: #eaeaea;
+        --grey-3: #999999;
+        --grey-4: #666666;
+        --grey-5: #333333;
+        --blue: #0076ff;
+        --magenta: #ff0080;
+        --orange: #f5a623;
+        --yellow: #f8e71c;
+        --green: #50e3c2;
+      }
+
+      body {
+        background-color: var(--grey-2);
+      }
+
+      .container {
+        min-height: 100vh;
+      }
+
+      .employee-card {
+        background-color: white;
+        border-radius: 5px;
+        padding: 12px;
+        margin: 10px 0;
+        display: grid;
+        grid-gap: 15px;
+        grid-template-columns: min-content 340px repeat(3, max-content);
+        align-items: center;
+      }
+
+      .bg-yellow {
+        background-color: var(--yellow);
+      }
+
+      .form-add-employee {
+        margin: 10px 0;
+        display: grid;
+        grid-gap: 15px;
+        grid-template-columns: 1fr auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app"></div>
+
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js"></script>
+
+    <script type="text/babel">
+      // 3) Ejemplo de Lista de Empleados
+      // La lista de empleados será un array de objetos con nombre, sector, avatar y id.
+
+      //    a. Poder elegir Empleado del Mes y mostrarlo de manera diferente ( LISTO )
+      //        a.1 Crear un nuevo botón en EmployeeCard que sea diga "Empleado del mes"
+      //        a.2 Al hacer click ( investigar evento de React onClick ) ejecutar un método "selectMonthEmployee"
+      //        a.3 El método obtendrá el id de empleado y lo almacenará en el estado en una key idMonthEmployee
+      //        a.4 Enviar una prop nueva a EmployeeCard llamada isMonthEmployee
+      //        a.5 El valor de esta prop será igual a el id de empleado que estemos iterando === monthEmployee ( del estado )
+      //        a.6 Editar el componente EmployeeCard para que reciba esta prop y de alguna manera por estilos se muestre distinto
+
+      //    b. Poder agregar un nuevo empleado ( LISTO )
+      //    c. Poder editar un empleado existente ( Se ve la próxima clase)
+
+      //    d. Poder eliminar un empleado existente ( LISTO )
+      //        d.1 Al hacer click ( investigar evento de React onClick ) en el botón "Eliminar" ejecutar un método handleRemoveEmployee
+      //        d.2 El método obtendrá el id de empleado y lo buscará en el array "list" del estado
+      //        d.4 Usando el método filter() ( Investigar ) obtener un array nuevo con todos los mismos elementos pero sin el empleado hallado
+      //        d.5 A este nuevo array almacenarlo en el estado en la propiedad "list"
+
+      //    e. Poder filtrar por departamento
+      //        Falta: agregar un botón para poder volver a ver todos los empleados sin importar el sector ( asignar listBackup a list )
+
+      //    f. Poder filtrar por nombre
+
+      // Diseño de Idea: https://dribbble.com/shots/6131920-Employee-page
+
+      class App extends React.Component {
+        constructor() {
+          super()
+
+          const employees = Array.from({ length: 30 }, () => ({
+            name: faker.name.findName(),
+            sector: faker.name.jobArea(),
+            avatar: faker.image.avatar(),
+            id: faker.random.uuid(),
+          }))
+
+          const sectors = employees.map(({ sector }) => sector)
+          const sectorsUnrepeated = new Set(sectors)
+          const sectorsArray = [...sectorsUnrepeated]
+
+          this.state = {
+            list: employees,
+            listBackup: employees,
+            employeeName: '',
+            idMonthEmployee: '',
+            sectors: sectorsArray,
+            dropdownActive: false,
+          }
+        }
+
+        handleAddEmployeeSubmit = event => {
+          event.preventDefault()
+          const { list, employeeName } = this.state
+
+          const newEmployee = {
+            name: employeeName,
+            sector: faker.name.jobArea(),
+            avatar: faker.image.avatar(),
+            id: faker.random.uuid(),
+          }
+
+          const newList = [newEmployee, ...list]
+
+          this.setState({ list: newList })
+        }
+
+        handleAddEmployeeChange = event => {
+          const { value } = event.target
+          this.setState({ employeeName: value })
+        }
+
+        handleMonthEmployee = id => {
+          this.setState({ idMonthEmployee: id })
+        }
+
+        handleRemoveEmployee = id => {
+          const { list } = this.state
+
+          const listWithoutEmployee = list.filter(employee => employee.id !== id)
+
+          this.setState({ list: listWithoutEmployee })
+        }
+
+        handleDropdownActive = () => this.setState(prevState => ({ dropdownActive: !prevState.dropdownActive }))
+
+        handleSelectSector = sector => {
+          const { listBackup } = this.state
+
+          const listFilteredBySector = listBackup.filter(employee => employee.sector === sector)
+
+          this.setState({ list: listFilteredBySector })
+        }
+
+        render() {
+          const { newEmployee, list, idMonthEmployee, dropdownActive, sectors } = this.state
+
+          return (
+            <div className='container'>
+              <h1 className='is-size-1'>Lista de Empleados</h1>
+
+              <form onSubmit={this.handleAddEmployeeSubmit} className='form-add-employee'>
+                <input className='input' type='text' value={newEmployee} onChange={this.handleAddEmployeeChange} />
+                <button className='button is-success' type='submit'>
+                  Agregar Empleado
+                </button>
+              </form>
+
+              <Dropdown
+                sectors={sectors}
+                dropdownActive={dropdownActive}
+                onSelectSector={this.handleSelectSector}
+                onDropdownActive={this.handleDropdownActive}
+              />
+
+              {list.map(employee => (
+                <EmployeeCard
+                  key={employee.id}
+                  employeeData={employee}
+                  idMonthEmployee={idMonthEmployee}
+                  onRemoveEmployee={this.handleRemoveEmployee}
+                  onSelectMonthEmployee={this.handleMonthEmployee}
+                />
+              ))}
+            </div>
+          )
+        }
+      }
+
+      const Dropdown = props => {
+        const { dropdownActive, sectors, onDropdownActive, onSelectSector } = props
+
+        return (
+          <div className={`dropdown ${dropdownActive === true ? 'is-active' : ''}`}>
+            <div className='dropdown-trigger'>
+              <button className='button' aria-haspopup='true' aria-controls='dropdown-menu' onClick={onDropdownActive}>
+                <span>Elegir sector</span>
+                <span className='icon is-small'>
+                  <i className='fas fa-angle-down' aria-hidden='true' />
+                </span>
+              </button>
+            </div>
+            <div className='dropdown-menu' id='dropdown-menu' role='menu'>
+              <div className='dropdown-content'>
+                {sectors.map(sector => (
+                  <a key={sector} href='#' className='dropdown-item' onClick={() => onSelectSector(sector)}>
+                    {sector}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      const EmployeeCard = props => {
+        const { employeeData, idMonthEmployee, onSelectMonthEmployee, onRemoveEmployee } = props
+
+        const isMonthEmployee = idMonthEmployee === employeeData.id
+
+        return (
+          <div className={`employee-card ${isMonthEmployee ? 'bg-yellow' : ''}`}>
+            <figure className='image is-64x64'>
+              <img className='is-rounded' src={employeeData.avatar} />
+            </figure>
+
+            <div>
+              <h2 className='is-size-3'>{employeeData.name}</h2>
+              <h3 className='is-family-monospace'>{employeeData.sector}</h3>
+            </div>
+
+            <button className='button is-primary'>
+              <span className='icon is-small'>
+                <i className='fas fa-edit' />
+              </span>
+              <span>Editar</span>
+            </button>
+
+            <button className='button is-danger is-outlined' onClick={() => onRemoveEmployee(employeeData.id)}>
+              <span className='icon is-small'>
+                <i className='fas fa-times' />
+              </span>
+              <span>Eliminar</span>
+            </button>
+
+            {/*
+                Conditional Rendering: Podemos utilizar ternarios o compuertas lógicas para mostrar una porción de UI en base a una condición
+                Ejemplo: Si es empleado del mes no queremos mostrar el botón en el empleado del mes, porque no tiene sentido seleccionarlo cuando ya lo es.
+            */}
+
+            {!isMonthEmployee && (
+              <button className='button is-info' onClick={() => onSelectMonthEmployee(employeeData.id)}>
+                <span className='icon is-small'>
+                  <i className='fas fa-award' />
+                </span>
+                <span>Empleado del mes</span>
+              </button>
+            )}
+          </div>
+        )
+      }
+
+      ReactDOM.render(<App />, document.querySelector('#app'))
+
+      /*
+       - Consulta de .splice() y .slice()
+       - Como implementar DidMount y DidUpdate con Hooks
+       - Ejercicios: Juanse, Franco, Fran,
+      */
+    </script>
+  </body>
+</html>
