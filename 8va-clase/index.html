@@ -6,7 +6,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css"
+    />
 
     <style>
       :root {
@@ -75,7 +78,7 @@
       //        a.6 Editar el componente EmployeeCard para que reciba esta prop y de alguna manera por estilos se muestre distinto
 
       //    b. Poder agregar un nuevo empleado ( LISTO )
-      //    c. Poder editar un empleado existente ( Se ve la próxima clase)
+      //    c. Poder editar un empleado existente ( TODO )
 
       //    d. Poder eliminar un empleado existente ( LISTO )
       //        d.1 Al hacer click ( investigar evento de React onClick ) en el botón "Eliminar" ejecutar un método handleRemoveEmployee
@@ -83,7 +86,7 @@
       //        d.4 Usando el método filter() ( Investigar ) obtener un array nuevo con todos los mismos elementos pero sin el empleado hallado
       //        d.5 A este nuevo array almacenarlo en el estado en la propiedad "list"
 
-      //    e. Poder filtrar por departamento
+      //    e. Poder filtrar por departamento ( LISTO )
       //        Falta: agregar un botón para poder volver a ver todos los empleados sin importar el sector ( asignar listBackup a list )
 
       //    f. Poder filtrar por nombre
@@ -112,6 +115,9 @@
             idMonthEmployee: '',
             sectors: sectorsArray,
             dropdownActive: false,
+            modalActive: false,
+            foundEmployee: null,
+            employeeToEdit: null,
           }
         }
 
@@ -140,6 +146,18 @@
           this.setState({ idMonthEmployee: id })
         }
 
+        handleEditEmployee = id => {
+          const foundEmployee = this.state.listBackup.find(employee => employee.id === id)
+
+          if (foundEmployee) {
+            this.setState({ employeeToEdit: foundEmployee }, () => this.triggerModal())
+          }
+        }
+
+        triggerModal = () => {
+          this.setState(prevState => ({ modalActive: !prevState.modalActive }))
+        }
+
         handleRemoveEmployee = id => {
           const { list } = this.state
 
@@ -148,25 +166,70 @@
           this.setState({ list: listWithoutEmployee })
         }
 
-        handleDropdownActive = () => this.setState(prevState => ({ dropdownActive: !prevState.dropdownActive }))
+        handleDropdownActive = () =>
+          this.setState(prevState => ({ dropdownActive: !prevState.dropdownActive }))
 
         handleSelectSector = sector => {
           const { listBackup } = this.state
 
           const listFilteredBySector = listBackup.filter(employee => employee.sector === sector)
 
-          this.setState({ list: listFilteredBySector })
+          this.setState({
+            selectedSector: sector,
+            list: listFilteredBySector,
+            dropdownActive: false,
+          })
+        }
+
+        handleRemoveSelectedSector = () => {
+          this.setState(prevState => ({ list: prevState.listBackup, selectedSector: '' }))
+        }
+
+        handleSubmitEdition = event => {
+          event.preventDefault()
+
+          const { employeeToEdit, list } = this.state
+
+          const listWithoutEmployee = list.filter(employee => employee.id !== employeeToEdit.id)
+          console.log('TCL: listWithoutEmployee', listWithoutEmployee)
+
+          this.setState({ list: [...listWithoutEmployee, employeeToEdit] })
+        }
+
+        handleChangeName = event => {
+          const { value } = event.target
+
+          this.setState(prevState => ({
+            employeeToEdit: {
+              ...prevState.employeeToEdit,
+              name: value,
+            },
+          }))
         }
 
         render() {
-          const { newEmployee, list, idMonthEmployee, dropdownActive, sectors } = this.state
+          const {
+            newEmployee,
+            list,
+            idMonthEmployee,
+            dropdownActive,
+            sectors,
+            selectedSector,
+            modalActive,
+            employeeToEdit,
+          } = this.state
 
           return (
             <div className='container'>
               <h1 className='is-size-1'>Lista de Empleados</h1>
 
               <form onSubmit={this.handleAddEmployeeSubmit} className='form-add-employee'>
-                <input className='input' type='text' value={newEmployee} onChange={this.handleAddEmployeeChange} />
+                <input
+                  className='input'
+                  type='text'
+                  value={newEmployee}
+                  onChange={this.handleAddEmployeeChange}
+                />
                 <button className='button is-success' type='submit'>
                   Agregar Empleado
                 </button>
@@ -175,15 +238,40 @@
               <Dropdown
                 sectors={sectors}
                 dropdownActive={dropdownActive}
+                selectedSector={selectedSector}
                 onSelectSector={this.handleSelectSector}
                 onDropdownActive={this.handleDropdownActive}
+                onRemoveSelectedSector={this.handleRemoveSelectedSector}
               />
+
+              {modalActive && (
+                <div className='modal is-active'>
+                  <div className='modal-background' />
+                  <div className='modal-card'>
+                    <header className='modal-card-head'>
+                      <p className='modal-card-title'>Modal title</p>
+                      <button className='delete' aria-label='close' onClick={this.triggerModal} />
+                    </header>
+                    <section className='modal-card-body'>
+                      <form onSubmit={this.handleSubmitEdition} className='form-add-employee'>
+                        <input
+                          className='input'
+                          type='text'
+                          value={employeeToEdit.name}
+                          onChange={this.handleChangeName}
+                        />
+                      </form>
+                    </section>
+                  </div>
+                </div>
+              )}
 
               {list.map(employee => (
                 <EmployeeCard
                   key={employee.id}
                   employeeData={employee}
                   idMonthEmployee={idMonthEmployee}
+                  onEditEmployee={this.handleEditEmployee}
                   onRemoveEmployee={this.handleRemoveEmployee}
                   onSelectMonthEmployee={this.handleMonthEmployee}
                 />
@@ -194,33 +282,73 @@
       }
 
       const Dropdown = props => {
-        const { dropdownActive, sectors, onDropdownActive, onSelectSector } = props
+        const {
+          dropdownActive,
+          sectors,
+          onDropdownActive,
+          onSelectSector,
+          selectedSector,
+          onRemoveSelectedSector,
+        } = props
 
         return (
-          <div className={`dropdown ${dropdownActive === true ? 'is-active' : ''}`}>
-            <div className='dropdown-trigger'>
-              <button className='button' aria-haspopup='true' aria-controls='dropdown-menu' onClick={onDropdownActive}>
-                <span>Elegir sector</span>
-                <span className='icon is-small'>
-                  <i className='fas fa-angle-down' aria-hidden='true' />
-                </span>
-              </button>
-            </div>
-            <div className='dropdown-menu' id='dropdown-menu' role='menu'>
-              <div className='dropdown-content'>
-                {sectors.map(sector => (
-                  <a key={sector} href='#' className='dropdown-item' onClick={() => onSelectSector(sector)}>
-                    {sector}
-                  </a>
-                ))}
+          <div>
+            <div className={`dropdown ${dropdownActive === true ? 'is-active' : ''}`}>
+              <div className='dropdown-trigger'>
+                <button
+                  className='button'
+                  aria-haspopup='true'
+                  aria-controls='dropdown-menu'
+                  onClick={onDropdownActive}
+                >
+                  <span>Elegir sector</span>
+                  <span className='icon is-small'>
+                    <i className='fas fa-angle-down' aria-hidden='true' />
+                  </span>
+                </button>
+              </div>
+              <div className='dropdown-menu' id='dropdown-menu' role='menu'>
+                <div className='dropdown-content'>
+                  {sectors.map(sector => (
+                    <a
+                      key={sector}
+                      href='#'
+                      className='dropdown-item'
+                      onClick={() => onSelectSector(sector)}
+                    >
+                      {sector}
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
+
+            {selectedSector && (
+              <button
+                className='button'
+                aria-haspopup='true'
+                aria-controls='dropdown-menu'
+                onClick={onRemoveSelectedSector}
+                style={{ marginLeft: '15px' }}
+              >
+                <span>{selectedSector}</span>
+                <span className='icon is-small'>
+                  <i className='fas fa-trash-alt' aria-hidden='true' />
+                </span>
+              </button>
+            )}
           </div>
         )
       }
 
       const EmployeeCard = props => {
-        const { employeeData, idMonthEmployee, onSelectMonthEmployee, onRemoveEmployee } = props
+        const {
+          employeeData,
+          idMonthEmployee,
+          onSelectMonthEmployee,
+          onRemoveEmployee,
+          onEditEmployee,
+        } = props
 
         const isMonthEmployee = idMonthEmployee === employeeData.id
 
@@ -235,14 +363,17 @@
               <h3 className='is-family-monospace'>{employeeData.sector}</h3>
             </div>
 
-            <button className='button is-primary'>
+            <button className='button is-primary' onClick={() => onEditEmployee(employeeData.id)}>
               <span className='icon is-small'>
                 <i className='fas fa-edit' />
               </span>
               <span>Editar</span>
             </button>
 
-            <button className='button is-danger is-outlined' onClick={() => onRemoveEmployee(employeeData.id)}>
+            <button
+              className='button is-danger is-outlined'
+              onClick={() => onRemoveEmployee(employeeData.id)}
+            >
               <span className='icon is-small'>
                 <i className='fas fa-times' />
               </span>
@@ -255,7 +386,10 @@
             */}
 
             {!isMonthEmployee && (
-              <button className='button is-info' onClick={() => onSelectMonthEmployee(employeeData.id)}>
+              <button
+                className='button is-info'
+                onClick={() => onSelectMonthEmployee(employeeData.id)}
+              >
                 <span className='icon is-small'>
                   <i className='fas fa-award' />
                 </span>
