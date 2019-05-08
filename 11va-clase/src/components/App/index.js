@@ -5,11 +5,8 @@ import 'dayjs/locale/es'
 import './index.css'
 import Input from '../Input'
 
-dayjs.locale('es') // use Spanish locale globally
-
+dayjs.locale('es')
 const API_URL = 'https://wt-8a099f3e7c73b2d17f4e018b6cfd6131-0.sandbox.auth0-extend.com/acamica'
-
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 class App extends React.Component {
   constructor() {
@@ -31,8 +28,6 @@ class App extends React.Component {
 
     try {
       this.setState({ isLoading: true })
-
-      await delay(2000)
 
       const response = await fetch(API_URL)
       const hotels = await response.json()
