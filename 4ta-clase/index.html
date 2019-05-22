@@ -55,6 +55,14 @@
          `
       }
 
+      const grid = document.querySelector('.grid')
+      const cardElement = CardItem({ image: '', name: 'Rick', species: 'Human', origin: { name: 'Earth' } })
+      console.log('TCL: cardElement', cardElement)
+
+      setTimeout(() => {
+        grid.innerHTML += cardElement
+      }, 5000)
+
       const getCharacters = async (baseUrl, from, to) => {
         const characterRange = Array.from({ length: to - from + 1 }, (_, index) => index + 1).join(',')
         const url = `${baseUrl}/character/${characterRange}`
@@ -113,7 +121,7 @@
         })
       }
 
-      main()
+      // main()
 
       // Investigar: Element.insertAdjacentHTML() 👉 https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML
       // Es una manera un poco más prolija para reemplazar innerHTML
