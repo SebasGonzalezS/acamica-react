@@ -68,3 +68,10 @@ Link a plataforma de [Acámica](https://www.acamica.com/cursos/506)
 7. Modificamos el `index.js` para importar App usando `import App from './components/App';`
 8. Instalamos dependencias: `react-router-dom` y `styled-components` usando `npm install react-router-dom styled-components`
 9. Correr el proyecto con: `npm start` o `npm run start`
+
+### Como encarar el proyecto:
+
+1. Hacer todos los componentes y el layout de la App
+2. Mostrar datos en función de una variable que contiene un array copiado del JSON de la API
+3. Agregar `react-router-dom` para mostrar las distintas páginas según las rutas indicadas
+4. Agregar la lógica necesaria para fetchear las distintas noticias y lógica extra que sea necesaria
