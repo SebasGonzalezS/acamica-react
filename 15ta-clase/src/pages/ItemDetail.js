@@ -2,6 +2,19 @@ import React, { Component } from 'react'
 
 import Card from '../components/Card'
 
+const categoriesId = {
+  politica: '1',
+  internacionales: '2',
+  tecnologia: '3',
+  espectaculos: '4',
+  deportes: '5',
+}
+
+// Este "slug" llega por "this.props.match.params.slug" que esta donde definimos la Ruta, por ej: <Route path="/categorias/:slug" component={Categories} />
+const slug = 'politica'
+
+console.log('categoriesId de politica es:', categoriesId[slug])
+
 class ItemDetail extends Component {
   state = {
     item: null,
@@ -9,7 +22,17 @@ class ItemDetail extends Component {
     isLoading: false,
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.fetchForniteItem()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.match.params.id !== this.props.match.params.id) {
+      this.fetchForniteItem()
+    }
+  }
+
+  async fetchForniteItem() {
     const { id } = this.props.match.params
 
     try {
