@@ -1,5 +1,37 @@
 # Acámica - Frontend Avanzado con React
 
+## Tercer Proyecto - Reward Store
+
+### Ejemplo
+
+Link: https://mikichallenge.now.sh
+
+Link: https://github.com/goncy/aerolab-challenge
+
+### API
+
+Ya el proyecto esta inicializado con un objeto que contiene todos los métodos para poder contactarse con la API y vive en `src/utils/api.js`
+
+### Guía
+
+La guía vive en [Aerolab Challenge](https://aerolab.co/coding-challenge-instructions) con toda la documentación sobre la funcionalidad necesaria.
+
+### Diseño
+
+- [Assets](https://cdn2.hubspot.net/hubfs/3023218/Coding%20Challenge/coding-challenge.zip)
+
+### Funcionalidad
+
+### Tecnologías
+
+- React
+- React Router
+- Redux y Redux Thunk
+- Styled-components ( Opcional )
+- Bulma u otro framework CSS ( opcional )
+
+---
+
 ## Segundo Proyecto - NewsFeed
 
 ### API
