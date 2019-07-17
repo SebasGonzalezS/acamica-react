@@ -12,10 +12,6 @@ Link: https://aerolavue-goncy.surge.sh
 
 Ya el proyecto esta inicializado con un objeto que contiene todos los métodos para poder contactarse con la API y vive en `src/utils/api.js`
 
-### Guía
-
-La guía vive en [Aerolab Challenge](https://aerolab.co/coding-challenge-instructions) con toda la documentación sobre la funcionalidad necesaria.
-
 ### Diseño
 
 El diseño de la UI la podes ver en [Figma](https://www.figma.com/file/Wo2jwCudAXYCpGoNCNSqubqp/coding-challenge?node-id=0%3A1) o podes basarte en los ejemplos de arriba.
@@ -41,6 +37,10 @@ Los usuarios tienen una indeterminada cantidad de puntos acumulados, y cada prod
 - Redux y Redux Thunk
 - Styled-components ( Opcional )
 - Bulma u otro framework CSS ( opcional )
+
+### Guía Oficial
+
+La guía vive en [Aerolab Challenge](https://aerolab.co/coding-challenge-instructions) con toda la documentación sobre la funcionalidad necesaria.
 
 ---
 
