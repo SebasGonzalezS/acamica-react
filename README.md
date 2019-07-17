@@ -2,11 +2,11 @@
 
 ## Tercer Proyecto - Reward Store
 
-### Ejemplo
+### Ejemplos
 
 Link: https://mikichallenge.now.sh
 
-Link: https://github.com/goncy/aerolab-challenge
+Link: https://aerolavue-goncy.surge.sh
 
 ### API
 
@@ -18,9 +18,21 @@ La guía vive en [Aerolab Challenge](https://aerolab.co/coding-challenge-instruc
 
 ### Diseño
 
-- [Assets](https://cdn2.hubspot.net/hubfs/3023218/Coding%20Challenge/coding-challenge.zip)
+El diseño de la UI la podes ver en [Figma](https://www.figma.com/file/Wo2jwCudAXYCpGoNCNSqubqp/coding-challenge?node-id=0%3A1) o podes basarte en los ejemplos de arriba.
+Los assets los podes descargar de [aquí](https://cdn2.hubspot.net/hubfs/3023218/Coding%20Challenge/coding-challenge.zip) y viven dentro de la carpeta /assets.
 
 ### Funcionalidad
+
+Los usuarios tienen una indeterminada cantidad de puntos acumulados, y cada producto equivalo a una cantidad de puntos:
+
+- [ ] Cada producto debe tener un precio visible en puntos.
+- [ ] El usuario debe poder ordenar los productos por precio, de mayor a menor y viceversa.
+- [ ] El usuario debe poder visualizar cuantos puntos tiene en su cuenta.
+- [ ] Tiene que haber una manera clara para que el usuario pueda distinguir que productos puede comprar y cuales no.
+- [ ] El boton "Redeem" debe estar disponible para aquellos productos que el usuario tiene suficientes puntos para reclamarlo.
+- [ ] Cuando el usuario no tiene la cantidad suficiente de puntos para un producto, debe poder visualizar cuantos puntos necesita para reclamarlo.
+- [ ] El usuario no debe poder reclamar un producto por el cuál no tiene la suficiente cantidad de puntos.
+- [ ] Cuando el usuario clickea en el botón "Redeem now" el sistema automáticamente debe mostrar el precio restante (precios del usuario - precio del item)
 
 ### Tecnologías
 
